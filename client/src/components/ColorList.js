@@ -11,6 +11,7 @@ const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [addNewColor, setAddNewColor] = useState(initialColor)
 
   const editColor = color => {
     setEditing(true);
@@ -25,7 +26,7 @@ const ColorList = ({ colors, updateColors }) => {
       updateColors(colors.map(color => color.id === res.data.id ? res.data : color))
       setEditing(false)
     })
-    .catch(error => console.log(error, "Save Error"))
+    .catch(error => console.log(error, "Error Saving Color"))
   };
 
   const deleteColor = (e, color) => {
@@ -34,8 +35,19 @@ const ColorList = ({ colors, updateColors }) => {
     .then (res => {
       updateColors(colors.filter(color => color.id !== res.data))
     })
-    .catch(error => console.log(error))
+    .catch(error => console.log(error, "Error Deleting Color"))
   };
+
+  const addColor = e => {
+    e.preventDefault();
+    axiosWithAuth().post(`api/colors`, addNewColor)
+      .then(res => {
+        console.log(res)
+        updateColors(res.data)
+        setAddNewColor(initialColor) 
+      })
+      .catch(error => console.log(error, "Error Adding Color"))
+  }
 
   return (
     <div className="colors-wrap">
@@ -87,8 +99,33 @@ const ColorList = ({ colors, updateColors }) => {
           </div>
         </form>
       )}
-      <div className="spacer" />
+      {/* <div className="spacer" /> */}
       {/* stretch - build another form here to add a color */}
+      
+      <form onSubmit={addColor}>
+        <h3>Add Color</h3>
+      <label>
+        color name:
+        <input
+        onChange={e => setAddNewColor({
+          ...addNewColor, 
+          color: e.target.value})
+        }
+          value={addNewColor.color}
+        />
+      </label>
+      <label>
+        hex code:
+        <input 
+        onChange = {e => setAddNewColor ({
+          ...addNewColor, 
+          code: { hex: e.target.value}
+        })}
+        value={addNewColor.code.hex}
+        />
+      </label>
+      <button type="submit">Save</button>
+      </form>
     </div>
   );
 };

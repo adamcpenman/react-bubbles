@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
-const emptyForm = { 
+const emptyForm = {
   username: '',
-  password:''
+  password: ''
 }
 
 const Login = (props) => {
@@ -12,7 +12,7 @@ const Login = (props) => {
   const [info, setInfo] = useState(emptyForm)
 
   const handleChange = e => {
-    setInfo ({
+    setInfo({
       ...info,
       [e.target.name]: e.target.value
     })
@@ -29,27 +29,32 @@ const Login = (props) => {
       .catch(error => console.log(error, "Login Error"))
   }
   return (
-    <>
+    <div className="bubbleApp">
       <h1>Welcome to the Bubble App!</h1>
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={info.username}
-          onChange={handleChange}
-          />
-          <input 
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={info.password}
-          onChange={handleChange}
-          />
-          <button type="submit">Login</button>
-      </form>
+      <div className="loginContainer">
+        <form onSubmit={handleSubmit}>
 
-    </>
+          <div className="loginForm">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={info.username}
+              onChange={handleChange}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={info.password}
+              onChange={handleChange}
+            />
+            <button className="button" type="submit">Login</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
   );
 };
 
