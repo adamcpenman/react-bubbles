@@ -19,11 +19,22 @@ const ColorList = ({ colors, updateColors }) => {
 
   const saveEdit = e => {
     e.preventDefault();
-
+  axiosWithAuth().put(`api/colors/${colorToEdit.id}`, colorToEdit)
+    .then(res => {
+      console.log(res)
+      updateColors(colors.map(color => color.id === res.data.id ? res.data : color))
+      setEditing(false)
+    })
+    .catch(error => console.log(error, "Save Error"))
   };
 
-  const deleteColor = color => {
- 
+  const deleteColor = (e, color) => {
+    e.stopPropagation();
+    axiosWithAuth().delete(`api/colors/${color.id}`)
+    .then (res => {
+      updateColors(colors.filter(color => color.id !== res.data))
+    })
+    .catch(error => console.log(error))
   };
 
   return (
@@ -33,11 +44,8 @@ const ColorList = ({ colors, updateColors }) => {
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
+              <span className="delete" onClick={(e) => {
+                deleteColor(e, color)}}>
                   x
               </span>{" "}
               {color.color}
